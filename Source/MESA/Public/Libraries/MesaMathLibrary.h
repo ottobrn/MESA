@@ -17,4 +17,7 @@ class MESA_API UMesaMathLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable)
 	static bool IsAngleInRange(float CurrentAngle, float MinAngle, float MaxAngle, float Offset);
+
+	UFUNCTION(BlueprintCallable)
+	static void NegateVector(FVector& InVector, bool bAllowZAxis = true);
 };

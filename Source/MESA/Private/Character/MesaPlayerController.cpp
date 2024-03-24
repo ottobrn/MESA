@@ -48,6 +48,7 @@ void AMesaPlayerController::SetupInputComponent()
 		EnhancedInputComponent->ClearActionValueBindings();
 
 		BindActions(DefaultMappingContext);
+		BindActions(DebugMappingContext);
 	}
 }
 
@@ -62,16 +63,21 @@ void AMesaPlayerController::InitializePlayerInputs()
 			ModifyContextOptions.bForceImmediately = true;
 
 			EnhancedInputLocalPlayerSubsystem->AddMappingContext(DefaultMappingContext, 0, ModifyContextOptions);
+
+#if !UE_BUILD_SHIPPING
+			// Dont use debug mapping context in shipping builds
+			EnhancedInputLocalPlayerSubsystem->AddMappingContext(DebugMappingContext, 1, ModifyContextOptions);
+#endif
 		}
 	}
 }
 
 void AMesaPlayerController::InitializePlayerCamera()
 {
-	AMesaPlayerCameraManager* CameraManager = Cast<AMesaPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	if (CameraManager)
+	MesaCameraManager = Cast<AMesaPlayerCameraManager>(PlayerCameraManager);
+	if (MesaCameraManager)
 	{
-		CameraManager->InitializeProperties(PossessedCharacter);
+		MesaCameraManager->InitializeProperties(PossessedCharacter);
 	}
 }
 
@@ -139,5 +145,13 @@ void AMesaPlayerController::JumpAction(const FInputActionValue& Value)
 	if (PossessedCharacter)
 	{
 		PossessedCharacter->JumpAction(Value.Get<bool>());
+	}
+}
+
+void AMesaPlayerController::SwitchCameraAction(const FInputActionValue& Value)
+{
+	if (MesaCameraManager)
+	{
+		MesaCameraManager->SwitchCurrentCamera();
 	}
 }

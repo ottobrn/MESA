@@ -3,6 +3,7 @@
 
 #include "Character/Camera/MesaPlayerCameraManager.h"
 #include "Debug/DebugComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void AMesaPlayerCameraManager::UpdateViewTarget(FTViewTarget& OutVT, float DeltaTime)
 {
@@ -10,17 +11,23 @@ void AMesaPlayerCameraManager::UpdateViewTarget(FTViewTarget& OutVT, float Delta
 	{
 		if (OutVT.Target.IsA<AMesaCharacterBase>())
 		{
-			OutVT.POV.Location = PossessedCharacter->GetFPCameraLocation();
-			OutVT.POV.Rotation = PossessedCharacter->GetControlRotation();
-#if !UE_BUILD_SHIPPING
-			PossessedCharacter->bUseControllerRotationYaw = !PossessedCharacter->GetDebugComponent()->bUseDebugCamera;
-			if (PossessedCharacter->GetDebugComponent()->bUseDebugCamera)
+			PossessedCharacter->bUseControllerRotationYaw = bIsFPCameraActive;
+			if (bIsFPCameraActive)
 			{
-				OutVT.POV.Location = FVector(PossessedCharacter->GetDebugCameraLocation().X, PossessedCharacter->GetDebugCameraLocation().Y, 550.f);
+				OutVT.POV.Location = PossessedCharacter->GetFPCameraLocation();
+				OutVT.POV.Rotation = PossessedCharacter->GetControlRotation();
 			}
-#endif
+			else
+			{
+				UpdateDebugCamera(OutVT, DeltaTime);
+			}
 		}
 	}
+}
+
+void AMesaPlayerCameraManager::SwitchCurrentCamera()
+{
+	bIsFPCameraActive = !bIsFPCameraActive;
 }
 
 void AMesaPlayerCameraManager::InitializeProperties(AMesaCharacterBase* InCharacter)
@@ -29,6 +36,30 @@ void AMesaPlayerCameraManager::InitializeProperties(AMesaCharacterBase* InCharac
 	{
 		return;
 	}
-
 	PossessedCharacter = InCharacter;
+}
+
+void AMesaPlayerCameraManager::UpdateDebugCamera(FTViewTarget& OutVT, float DeltaTime)
+{
+#if ALLOW_GAMEPLAY_DEBUGGER
+	if (!bIsFPCameraActive)
+	{
+		float RotationAngleYaw = PossessedCharacter->GetControlRotation().Yaw;
+		
+		const FVector& BackwardVector = PossessedCharacter->GetActorForwardVector();
+		const FVector& CharacterLocation = PossessedCharacter->GetActorLocation();
+
+		// Calculate new camera position based on character's position and rotation
+		FVector CameraLocation = PossessedCharacter->GetActorLocation() - (BackwardVector * CameraLocationOffset);
+		const float DistanceFromCharacter = FVector::Distance(CharacterLocation, CameraLocation);
+		
+		// Calculate new camera position using trigonometry (assuming rotation around Z axis)
+		CameraLocation.X = CharacterLocation.X + DistanceFromCharacter * FMath::Cos(FMath::DegreesToRadians(RotationAngleYaw));
+		CameraLocation.Y = CharacterLocation.Y + DistanceFromCharacter * FMath::Sin(FMath::DegreesToRadians(RotationAngleYaw));
+		CameraLocation.Z = CharacterLocation.Z + 200.f;
+		
+		OutVT.POV.Location = UKismetMathLibrary::VInterpTo(OutVT.POV.Location, CameraLocation, DeltaTime, 10.f);
+		OutVT.POV.Rotation = (CharacterLocation - CameraLocation).Rotation();
+	}
+#endif
 }

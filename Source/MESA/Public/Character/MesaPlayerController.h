@@ -11,6 +11,7 @@
 class AMesaCharacter;
 class AMesaCharacterBase;
 class UInputMappingContext;
+class AMesaPlayerCameraManager;
 /**
  * 
  */
@@ -53,10 +54,19 @@ public:
 	UFUNCTION()
 	void JumpAction(const FInputActionValue& Value);
 
+	UFUNCTION()
+	void SwitchCameraAction(const FInputActionValue& Value);
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AMesaCharacterBase> PossessedCharacter = nullptr;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AMesaPlayerCameraManager> MesaCameraManager = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Mesa|Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Mesa|Input")
+	TObjectPtr<UInputMappingContext> DebugMappingContext = nullptr;
 };

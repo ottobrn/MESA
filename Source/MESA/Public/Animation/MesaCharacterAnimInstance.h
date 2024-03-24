@@ -27,12 +27,26 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanSprinting() const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsGrounded() const;
+
 protected:
 	void UpdateAnimationProperties();
 
 	void UpdateMovementValues(float DeltaTime);
+	
+	void UpdateRotationValues();
 
 	void CalculateMovementDirection();
+
+	void CalculateLeanXYValue(float DeltaTime);
+
+public:
+	UFUNCTION(BlueprintCallable)
+	float GetMaxAcceleration() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetMaxBreakingDeceleration() const;
 
 	FDirectionBlending CalculateDirectionBlending() const;
 
@@ -49,15 +63,38 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	FDirectionBlending DirectionBlending;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	ECharacterMovementState MovementState = ECharacterMovementState::None;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Helpers|Blending")
+	FBlendingHelpers BlendingHelpers;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	ECharacterGait CharacterGait = ECharacterGait::None;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	ECharacterStance CharacterStance = ECharacterStance::None;
+	FCharacterAnimStates CharacterAnimStates;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float MovementOffset = 0.f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	FVector LeanXY = FVector::ZeroVector;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector RelativeAcceleration = FVector::ZeroVector;
+
+	// TODO: In struct
+	UPROPERTY(BlueprintReadOnly)
+	float FYaw = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float BYaw = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float RYaw = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float LYaw = 0.f;
+
+	// Curves
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UCurveVector> YawOffset_FB = nullptr;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UCurveVector> YawOffset_LR = nullptr;
 };

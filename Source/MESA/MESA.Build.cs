@@ -12,6 +12,16 @@ public class MESA : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "AnimGraphRuntime", "GameplayDebugger" });
 
+		if (Target.Configuration == UnrealTargetConfiguration.Shipping)
+		{
+			PublicDefinitions.Add("ALLOW_GAMEPLAY_DEBUGGER=0");
+		}
+		else
+		{
+			PublicDefinitions.Add("ALLOW_GAMEPLAY_DEBUGGER=1");
+		}
+		
+
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		

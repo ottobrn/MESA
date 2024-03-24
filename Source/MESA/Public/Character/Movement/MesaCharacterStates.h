@@ -39,14 +39,3 @@ enum class ECharacterMovementDirection : uint8
 	Right,
 	Left,
 };
-
-UENUM(BlueprintType)
-enum class ECharacterMovementSubDirection : uint8
-{
-	None,
-	LF,
-	RF,
-	BL,
-	BR,
-};
-

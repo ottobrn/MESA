@@ -18,12 +18,23 @@ class MESA_API AMesaPlayerCameraManager : public APlayerCameraManager
 public:
 	virtual void UpdateViewTarget(FTViewTarget& OutVT, float DeltaTime) override;
 
+public:
+	UFUNCTION()
+	void SwitchCurrentCamera();
+
+	UFUNCTION()
 	void InitializeProperties(AMesaCharacterBase* InCharacter);
+
+	UFUNCTION()
+	void UpdateDebugCamera(FTViewTarget& OutVT, float DeltaTime);
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AMesaCharacterBase> PossessedCharacter;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera|Debug")
+	float CameraLocationOffset = 400.f;
+
 	UPROPERTY(BlueprintReadOnly)
-	FVector CameraLocation = FVector::ZeroVector;
+	bool bIsFPCameraActive = true;
 };

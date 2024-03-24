@@ -39,7 +39,7 @@ public:
 	FORCEINLINE UMesaCharacterMovementComponent* GetMesaMovementComponent() const { return CharacterMovementComponent; }
 
 private:
-	// Character states
+	// Character states properties
 	UPROPERTY(VisibleAnywhere, Replicated, Category = "Settings|Movement")
 	ECharacterMovementState MovementState = ECharacterMovementState::Grounded;
 
@@ -84,7 +84,7 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Settings|Movement")
 	void Server_SetCharacterMovementState(const ECharacterMovementState NewGait);
 
-	// Movement
+	// Movement functions
 	UFUNCTION(BlueprintCallable, Category = "Settings|Movement")
 	float GetSpeed() const { return CharacterSpeed; }
 
@@ -100,13 +100,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Settings|Movement")
 	FRotator GetReplicatedControlRotation() const { return ReplicatedControlRotation; };
 
+	UFUNCTION(BlueprintCallable)
+	FRotator GetSmoothedRotation() const { return SmoothRotation; }
+
 public:
-	// Camera
+	// Camera functions
 	UFUNCTION(BlueprintCallable, Category = Camera)
 	FVector GetFPCameraLocation() const;
-
-	UFUNCTION(BlueprintCallable, Category = Camera)
-	FVector GetDebugCameraLocation() const;
 
 private:
 	void SetBasicMovementValues(float DeltaTime);
@@ -133,9 +133,9 @@ public:
 	void JumpAction(const bool bValue);
 
 protected:
-	UPROPERTY(EditAnywhere)
-	float LookUpDownRate = 0.0f;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMesaCharacterMovementComponent> CharacterMovementComponent = nullptr;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UDebugComponent> DebugComponent = nullptr;
 
@@ -145,20 +145,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class USkeletalMeshComponent> FPMesh = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<class UCameraComponent> CameraComponent = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<class USpringArmComponent> SpringArmComponent = nullptr;
-
 public:
 	UFUNCTION(BlueprintCallable)
 	UDebugComponent* GetDebugComponent() const { return DebugComponent; }
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMesaCharacterMovementComponent> CharacterMovementComponent = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings|Movement")
 	FDataTableRowHandle CharacterSettings;
 
@@ -196,6 +187,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Settings|Rotation")
 	FRotator LastMovementInputRotation = FRotator::ZeroRotator;
 
+	FRotator SmoothRotation = FRotator::ZeroRotator;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Settings|Movement")
 	float MovementInputAmount = 0.0f;
+
+	// Camera properties
+	UPROPERTY(EditAnywhere)
+	float LookUpDownRate = 0.0f;
 };

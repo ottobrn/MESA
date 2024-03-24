@@ -110,3 +110,42 @@ struct FDirectionBlending
 	UPROPERTY(BlueprintReadOnly)
 	float L = 0.f;
 };
+
+USTRUCT(BlueprintType)
+struct FBlendingHelpers
+{
+	GENERATED_BODY();
+	
+	UPROPERTY(EditAnywhere)
+	float DirectionBlendingInterpSpeed = 10.f;
+
+	UPROPERTY(EditAnywhere)
+	float LeanInterpSpeed = 10.f;
+
+	UPROPERTY(EditAnywhere)
+	float RFThreshold = 70.f;
+
+	UPROPERTY(EditAnywhere)
+	float LFThresold = -70.f;
+
+	UPROPERTY(EditAnywhere)
+	float RBThresold = 110.f;
+
+	UPROPERTY(EditAnywhere)
+	float LBThresold = -110.f;
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterAnimStates
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	ECharacterMovementState MovementState = ECharacterMovementState::Grounded;
+
+	UPROPERTY()
+	ECharacterGait CharacterGait = ECharacterGait::Running;
+
+	UPROPERTY()
+	ECharacterStance CharacterStance = ECharacterStance::Idle;
+};

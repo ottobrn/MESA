@@ -23,13 +23,6 @@ AMesaCharacterBase::AMesaCharacterBase(const FObjectInitializer& ObjectInitializ
 	TPMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TPMesh"));
 	TPMesh->SetupAttachment(RootComponent);
 
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
-	
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("DebugCamera"));
-	CameraComponent->SetupAttachment(SpringArmComponent);
-	CameraComponent->FieldOfView = 90.f;
-	CameraComponent->SetActive(true);
-
 	FPMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FPMesh"));
 	FPMesh->SetupAttachment(RootComponent);
 	FPMesh->SetOnlyOwnerSee(true);
@@ -118,17 +111,6 @@ FVector AMesaCharacterBase::GetFPCameraLocation() const
 	return FPMesh->GetSocketLocation(FName("SOCKET_Camera_Back"));
 }
 
-FVector AMesaCharacterBase::GetDebugCameraLocation() const
-{
-#if !UE_BUILD_SHIPPING
-	if (CameraComponent)
-	{
-		return CameraComponent->GetComponentLocation();
-	}
-#endif
-	return FVector();
-}
-
 void AMesaCharacterBase::UpdateCharacterRotation(float DeltaTime)
 {
 }
@@ -153,6 +135,7 @@ void AMesaCharacterBase::SetBasicMovementValues(float DeltaTime)
 		ReplicatedControlRotation = GetControlRotation();
 		MaxAcceleration = GetCharacterMovement()->GetMaxAcceleration();
 	}
+	SmoothRotation = UKismetMathLibrary::RInterpTo(SmoothRotation, ReplicatedControlRotation, DeltaTime, 30);
 
 	if (bIsMoving)
 	{
