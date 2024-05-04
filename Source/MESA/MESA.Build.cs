@@ -8,17 +8,18 @@ public class MESA : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Slate", "SlateCore"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "AnimGraphRuntime", "GameplayDebugger" });
 
 		if (Target.Configuration == UnrealTargetConfiguration.Shipping)
 		{
-			PublicDefinitions.Add("ALLOW_GAMEPLAY_DEBUGGER=0");
+			PublicDefinitions.AddRange(new string[] { "ALLOW_GAMEPLAY_DEBUGGER=0"});
 		}
 		else
 		{
-			PublicDefinitions.Add("ALLOW_GAMEPLAY_DEBUGGER=1");
+			PublicDefinitions.AddRange(new string[] { "ALLOW_GAMEPLAY_DEBUGGER=1"});
+			PrivateDependencyModuleNames.Add("ImGui");
 		}
 		
 

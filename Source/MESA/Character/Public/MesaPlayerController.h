@@ -57,6 +57,9 @@ public:
 	UFUNCTION()
 	void SwitchCameraAction(const FInputActionValue& Value);
 
+	UFUNCTION()
+	void ToggleDebugMenu(const FInputActionValue& Value);
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AMesaCharacterBase> PossessedCharacter = nullptr;

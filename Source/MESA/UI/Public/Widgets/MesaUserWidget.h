@@ -13,5 +13,4 @@ UCLASS()
 class MESA_API UMesaUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
 };

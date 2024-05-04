@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MESA/Character/Public/MesaCharacterBase.h"
 #include "MESA/Character/Public/Camera/MesaPlayerCameraManager.h"
+#include "MESA/UI/Public/MesaUIManager.h"
 
 void AMesaPlayerController::OnPossess(APawn* InPawn)
 {
@@ -152,5 +153,13 @@ void AMesaPlayerController::SwitchCameraAction(const FInputActionValue& Value)
 	if (MesaCameraManager)
 	{
 		MesaCameraManager->SwitchCurrentCamera();
+	}
+}
+
+void AMesaPlayerController::ToggleDebugMenu(const FInputActionValue& Value)
+{
+	if (TObjectPtr<UMesaUIManager> UIManager = UMesaUIManager::Get(GetWorld()))
+	{
+		UIManager->ToggleDebugMenu();
 	}
 }

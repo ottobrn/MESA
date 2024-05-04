@@ -149,14 +149,18 @@ FDirectionBlending UMesaCharacterAnimInstance::CalculateDirectionBlending() cons
 	const FVector& VelocityDirection = PossessedCharacter->GetActorRotation().UnrotateVector(AnimSettings.Velocity.GetSafeNormal(0.1f));
 	const float VecComponentSum = FMath::Abs(VelocityDirection.X) + FMath::Abs(VelocityDirection.Y) + FMath::Abs(VelocityDirection.Z);
 
-	const FVector& RelativeDirection = VelocityDirection / VecComponentSum;
-	FDirectionBlending LocalBlending;
-	LocalBlending.F = FMath::Clamp(RelativeDirection.X, 0.f, 1.f);
-	LocalBlending.B = FMath::Abs(FMath::Clamp(RelativeDirection.X, -1.f, 0.f));
-	LocalBlending.R = FMath::Clamp(RelativeDirection.Y, 0.f, 1.f);
-	LocalBlending.L = FMath::Abs(FMath::Clamp(RelativeDirection.Y, -1.f, 0.f));
+	if (VecComponentSum > 0.f)
+	{
+		const FVector& RelativeDirection = VelocityDirection / VecComponentSum;
+		FDirectionBlending LocalBlending;
+		LocalBlending.F = FMath::Clamp(RelativeDirection.X, 0.f, 1.f);
+		LocalBlending.B = FMath::Abs(FMath::Clamp(RelativeDirection.X, -1.f, 0.f));
+		LocalBlending.R = FMath::Clamp(RelativeDirection.Y, 0.f, 1.f);
+		LocalBlending.L = FMath::Abs(FMath::Clamp(RelativeDirection.Y, -1.f, 0.f));
 
-	return LocalBlending;
+		return LocalBlending;
+	}
+	return FDirectionBlending();
 }
 
 void UMesaCharacterAnimInstance::UpdateAnimationProperties()

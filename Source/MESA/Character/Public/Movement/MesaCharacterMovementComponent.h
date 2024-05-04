@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/Misc/MesaCharacterStructLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MesaCharacterMovementComponent.generated.h"
 

@@ -1,0 +1,37 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "ImGuiDelegates.h"
+#include "MESA/UI/Public/Widgets/MesaUserWidget.h"
+#include "MesaDebugMenu.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class MESA_API UMesaDebugMenu : public UMesaUserWidget
+{
+	GENERATED_BODY()
+
+public:
+	void ToggleDebugMenu();
+
+	bool IsDebugEnabled() const { return bIsDebugEnabled; }
+
+protected:
+	UFUNCTION()
+	void OnDraw();
+
+	virtual void NativeDestruct() override;
+	
+private:
+	FImGuiDelegate ImGuiDelegate;
+	FImGuiDelegateHandle ImGuiHandle;
+
+	UPROPERTY()
+	bool bIsDebugEnabled = false;
+
+	bool bIsRegistered = false;
+};

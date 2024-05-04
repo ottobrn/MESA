@@ -51,7 +51,7 @@ public:
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<AMesaCharacterBase> PossessedCharacter;
+	TObjectPtr<class AMesaCharacterBase> PossessedCharacter;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	FCharacterAnimSettings AnimSettings;
@@ -92,8 +92,8 @@ protected:
 
 	// Curves
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UCurveVector> YawOffset_FB = nullptr;
+	TObjectPtr<class UCurveVector> YawOffset_FB = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UCurveVector> YawOffset_LR = nullptr;
+	TObjectPtr<class UCurveVector> YawOffset_LR = nullptr;
 };
