@@ -25,6 +25,11 @@ protected:
 	void OnDraw();
 
 	virtual void NativeDestruct() override;
+
+private:
+	void SetupWindowStyle();
+	
+	void DrawAnimationSection();
 	
 private:
 	FImGuiDelegate ImGuiDelegate;
@@ -32,6 +37,15 @@ private:
 
 	UPROPERTY()
 	bool bIsDebugEnabled = false;
-
+	
+	UPROPERTY()
 	bool bIsRegistered = false;
+
+private:
+	// Instances
+	UPROPERTY()
+	TObjectPtr<class UMesaDebugManager> MesaDebugManager = nullptr;
+
+private:
+	bool bIsMovementStatsOpened = false;
 };

@@ -25,6 +25,7 @@ public:
 	void ToggleDebugMenu();
 
 protected:
+	UPROPERTY()
 	TObjectPtr<class UMesaDebugMenu> DebugMenuWidget;
 
 	TSharedPtr<SWidget> DebugMenu;

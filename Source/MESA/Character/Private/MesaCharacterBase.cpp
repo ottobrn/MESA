@@ -7,6 +7,7 @@
 #include "MESA/Character/Public/Camera/MesaPlayerCameraManager.h"
 #include "MESA/Character/Public/Movement/MesaCharacterMovementComponent.h"
 #include "MESA/Debug/DebugComponent.h"
+#include "MESA/Debug/MesaDebugManager.h"
 #include "Net/UnrealNetwork.h"
 
 AMesaCharacterBase::AMesaCharacterBase(const FObjectInitializer& ObjectInitializer) :
@@ -36,6 +37,7 @@ void AMesaCharacterBase::BeginPlay()
 	{
 		SetMovementState(ECharacterMovementState::Grounded);
 	}
+	UMesaDebugManager::Get(GetWorld())->SetCharacter(this);
 }
 
 void AMesaCharacterBase::PostInitializeComponents()

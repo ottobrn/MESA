@@ -49,6 +49,8 @@ public:
 
 	FDirectionBlending CalculateDirectionBlending() const;
 
+	const FCharacterAnimDirection& GetMovementDirection() { return MovementDirection; }
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class AMesaCharacterBase> PossessedCharacter;
