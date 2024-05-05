@@ -4,7 +4,7 @@
 #include "DebugComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "MESA/Character/Public/MesaCharacterBase.h"
+#include "MESA/Character/MesaCharacterBase.h"
 
 // Sets default values for this component's properties
 UDebugComponent::UDebugComponent()

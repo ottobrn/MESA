@@ -1,14 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MESA/Animation/Public/MesaCharacterAnimInstance.h"
-
+#include "MesaCharacterAnimInstance.h"
 #include "KismetAnimationLibrary.h"
 #include "Curves/CurveVector.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MESA/MESA.h"
-#include "MESA/Character/Public/MesaCharacterBase.h"
-#include "MESA/Character/Public/Movement/MesaCharacterMovementComponent.h"
+#include "MESA/Character/MesaCharacterBase.h"
+#include "MESA/Character/MesaCharacterMovementComponent.h"
 #include "MESA/Libraries/MesaMathLibrary.h"
 
 void UMesaCharacterAnimInstance::NativeInitializeAnimation()

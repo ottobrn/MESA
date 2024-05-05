@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "MESA/Character/Public/Misc/MesaCharacterStructLibrary.h"
-#include "MESA/Character/Public/Movement/MesaCharacterStates.h"
+#include "MESA/Libraries/MesaCharacterStatesLibrary.h"
+#include "MESA/Libraries/MesaCharacterStructLibrary.h"
 #include "MesaCharacterAnimInstance.generated.h"
 
 /**

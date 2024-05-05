@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MESA/Character/Public/Movement/MesaCharacterStates.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MesaDebugManager.generated.h"
 

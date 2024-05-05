@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ImGuiDelegates.h"
-#include "MESA/UI/Public/Widgets/MesaUserWidget.h"
+#include "MesaUserWidget.h"
 #include "MesaDebugMenu.generated.h"
 
 /**

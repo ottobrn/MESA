@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MESA/Character/Public/Camera/MesaPlayerCameraManager.h"
+#include "MesaPlayerCameraManager.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "MESA/Character/Public/MesaCharacterBase.h"
+#include "MESA/Character/MesaCharacterBase.h"
 
 void AMesaPlayerCameraManager::UpdateViewTarget(FTViewTarget& OutVT, float DeltaTime)
 {
@@ -51,7 +51,7 @@ void AMesaPlayerCameraManager::UpdateDebugCamera(FTViewTarget& OutVT, float Delt
 	{
 		float RotationAngleYaw = PossessedCharacter->GetControlRotation().Yaw;
 		
-		const FVector& BackwardVector = PossessedCharacter->GetActorForwardVector();
+		const FVector& BackwardVector = PossessedCharacter->GetActorForwardVector() * (-1.f);
 		const FVector& CharacterLocation = PossessedCharacter->GetActorLocation();
 
 		// Calculate new camera position based on character's position and rotation
@@ -59,8 +59,8 @@ void AMesaPlayerCameraManager::UpdateDebugCamera(FTViewTarget& OutVT, float Delt
 		const float DistanceFromCharacter = FVector::Distance(CharacterLocation, CameraLocation);
 		
 		// Calculate new camera position using trigonometry (assuming rotation around Z axis)
-		CameraLocation.X = CharacterLocation.X + DistanceFromCharacter * FMath::Cos(FMath::DegreesToRadians(RotationAngleYaw));
-		CameraLocation.Y = CharacterLocation.Y + DistanceFromCharacter * FMath::Sin(FMath::DegreesToRadians(RotationAngleYaw));
+		CameraLocation.X = CharacterLocation.X - DistanceFromCharacter * FMath::Cos(FMath::DegreesToRadians(RotationAngleYaw));
+		CameraLocation.Y = CharacterLocation.Y - DistanceFromCharacter * FMath::Sin(FMath::DegreesToRadians(RotationAngleYaw));
 		CameraLocation.Z = CharacterLocation.Z + 200.f;
 		
 		OutVT.POV.Location = UKismetMathLibrary::VInterpTo(OutVT.POV.Location, CameraLocation, DeltaTime, 10.f);

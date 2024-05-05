@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MESA/Character/Public/Movement/MesaCharacterMovementComponent.h"
-#include "MESA/Character/Public/MesaCharacterBase.h"
-#include "MESA/Character/Public/Misc/MesaCharacterStructLibrary.h"
-#include "MESA/Character/Public/Movement/MesaCharacterStates.h"
+#include "MesaCharacterMovementComponent.h"
+#include "MesaCharacterBase.h"
+#include "MESA/Libraries/MesaCharacterStructLibrary.h"
 
 UMesaCharacterMovementComponent::UMesaCharacterMovementComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

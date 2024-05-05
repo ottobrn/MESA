@@ -1,8 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MESA/UI/Public/MesaUIManager.h"
+#include "MesaUIManager.h"
 #include "Blueprint/UserWidget.h"
-#include "Slate/MesaDebugMenu.h"
+#include "Widgets/MesaDebugMenu.h"
 
 UMesaUIManager* UMesaUIManager::Get(UWorld* World)
 {

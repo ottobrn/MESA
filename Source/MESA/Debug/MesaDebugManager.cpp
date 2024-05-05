@@ -3,8 +3,8 @@
 
 #include "MesaDebugManager.h"
 
-#include "MESA/Animation/Public/MesaCharacterAnimInstance.h"
-#include "MESA/Character/Public/MesaCharacterBase.h"
+#include "MESA/Animation/MesaCharacterAnimInstance.h"
+#include "MESA/Character/MesaCharacterBase.h"
 
 UMesaDebugManager* UMesaDebugManager::Get(UWorld* World)
 {

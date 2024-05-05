@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "MESA/Character/Public/Movement/MesaCharacterStates.h"
+#include "MesaCharacterStatesLibrary.h"
 #include "MesaCharacterStructLibrary.generated.h"
 
 USTRUCT(BlueprintType)

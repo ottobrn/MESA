@@ -1,13 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MESA/Character/Public/MesaCharacterBase.h"
+#include "MesaCharacterBase.h"
+#include "MesaCharacterMovementComponent.h"
+#include "MesaPlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MESA/MESA.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "MESA/Character/Public/Camera/MesaPlayerCameraManager.h"
-#include "MESA/Character/Public/Movement/MesaCharacterMovementComponent.h"
+#include "MESA/Camera/MesaPlayerCameraManager.h"
 #include "MESA/Debug/DebugComponent.h"
+#include "MESA/Debug/MesaDebugHelpers.h"
 #include "MESA/Debug/MesaDebugManager.h"
+#include "MESA/Libraries/MesaCharacterStatesLibrary.h"
+#include "MESA/Libraries/MesaCharacterStructLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 AMesaCharacterBase::AMesaCharacterBase(const FObjectInitializer& ObjectInitializer) :
@@ -123,6 +128,14 @@ bool AMesaCharacterBase::IsFirstPersonCamera() const
 
 void AMesaCharacterBase::UpdateCharacterRotation(float DeltaTime)
 {
+	if (IsFirstPersonCamera())
+	{
+		if (GetLocalRole() != ROLE_SimulatedProxy)
+		{
+			ReplicatedControlRotation = GetControlRotation();
+		}
+		SmoothRotation = UKismetMathLibrary::RInterpTo(SmoothRotation, GetControlRotation(), DeltaTime, 30);
+	}
 }
 
 void AMesaCharacterBase::SetBasicMovementValues(float DeltaTime)
@@ -142,10 +155,8 @@ void AMesaCharacterBase::SetBasicMovementValues(float DeltaTime)
 	else
 	{
 		ReplicatedCurrentAcceleration = GetCharacterMovement()->GetCurrentAcceleration();
-		ReplicatedControlRotation = GetControlRotation();
 		MaxAcceleration = GetCharacterMovement()->GetMaxAcceleration();
 	}
-	SmoothRotation = UKismetMathLibrary::RInterpTo(SmoothRotation,  GetControlRotation(), DeltaTime, 30);
 
 	if (bIsMoving)
 	{
@@ -189,8 +200,9 @@ void AMesaCharacterBase::SetMovementState(const ECharacterMovementState NewState
 	if (NewState != MovementState)
 	{
 		MovementState = NewState;
-		if (!HasAuthority())
+		if (IsLocallyControlled() && !HasAuthority())
 		{
+			TRACE_WARNING(FString::Printf(TEXT("Actor: %s"), *GetName()), 1.f);
 			Server_SetCharacterMovementState(NewState);
 		}
 	}
@@ -201,7 +213,7 @@ void AMesaCharacterBase::SetCharacterGait(const ECharacterGait NewGait)
 	if (NewGait != CharacterGait)
 	{
 		CharacterGait = NewGait;
-		if (!HasAuthority())
+		if (IsLocallyControlled() && !HasAuthority())
 		{
 			Server_SetCharacterGait(NewGait);
 		}

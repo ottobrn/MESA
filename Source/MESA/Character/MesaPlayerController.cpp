@@ -1,13 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MESA/Character/Public/MesaPlayerController.h"
+#include "MesaPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
-#include "Kismet/GameplayStatics.h"
-#include "MESA/Character/Public/MesaCharacterBase.h"
-#include "MESA/Character/Public/Camera/MesaPlayerCameraManager.h"
-#include "MESA/UI/Public/MesaUIManager.h"
+#include "MesaCharacterBase.h"
+#include "MESA/Camera/MesaPlayerCameraManager.h"
+#include "MESA/UI/MesaUIManager.h"
 
 void AMesaPlayerController::OnPossess(APawn* InPawn)
 {

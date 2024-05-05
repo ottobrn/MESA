@@ -5,11 +5,10 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Character.h"
-#include "Misc/MesaCharacterStructLibrary.h"
-#include "Movement/MesaCharacterStates.h"
+#include "MESA/Libraries/MesaCharacterStatesLibrary.h"
+#include "MESA/Libraries/MesaCharacterStructLibrary.h"
 #include "MesaCharacterBase.generated.h"
 
-struct FMovementSettings;
 class UDebugComponent;
 class UMesaCharacterMovementComponent;
 
