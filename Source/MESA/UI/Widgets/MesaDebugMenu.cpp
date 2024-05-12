@@ -5,6 +5,7 @@
 #include "MESA/MESA.h"
 #include <imgui_internal.h>
 #include "ImGuiModule.h"
+#include "MESA/Debug/MesaDebugHelpers.h"
 #include "MESA/Debug/MesaDebugManager.h"
 
 void UMesaDebugMenu::ToggleDebugMenu()
@@ -53,18 +54,46 @@ void UMesaDebugMenu::SetupWindowStyle()
 
 void UMesaDebugMenu::DrawAnimationSection()
 {
-	if (ImGui::CollapsingHeader("Animations"))
+	const TArray<FGameDebugTextInfo>* AnimInfos = MesaDebugManager->GetDebugInfo().Find(AnimHeaderName);
+	const FString* Key = MesaDebugManager->GetDebugInfo().FindKey(*AnimInfos);
+	if (!Key || !AnimInfos)
 	{
-		ImGui::Checkbox("Show movement stats", &bIsMovementStatsOpened);
-		if (bIsMovementStatsOpened)
+		return;
+	}
+	
+	const char* Label = ToCharPtr(*Key);
+	if (ImGui::CollapsingHeader(Label))
+	{
+		if (Label == AnimHeaderName)
 		{
-			if (ImGui::Begin("Movement Stat"), &bIsMovementStatsOpened)
+			ImGui::Checkbox("Show movement stats", &bIsMovementStatsOpened);
+			ImGui::Checkbox("Show movement values", &bIsMovementValuesOpened);
+			for (const FGameDebugTextInfo& TextInfo : *AnimInfos)
 			{
-				ImGui::Text("Character Gait: %s", TCHAR_TO_UTF8(*EnumToString(MesaDebugManager->GetCharacterGait())));
-				ImGui::Text("Character Stance: %s", TCHAR_TO_UTF8(*EnumToString(MesaDebugManager->GetCharacterStance())));
-				ImGui::Text("Movement State: %s", TCHAR_TO_UTF8(*EnumToString(MesaDebugManager->GetCharacterMovementState())));
-				ImGui::Text("Movement Direction: %s", TCHAR_TO_UTF8(*EnumToString(MesaDebugManager->GetCharacterMovementDirection())));
-				ImGui::End();
+				if (TextInfo.MenuName == MovementStatsMenuName)
+				{
+					if (bIsMovementStatsOpened)
+					{
+						if (ImGui::Begin(ToCharPtr(MovementStatsMenuName)), &bIsMovementStatsOpened)
+						{
+							ImGui::Text(ToCharPtr(TextInfo.Header + ": %s"), ToCharPtr(TextInfo.Value));
+							ImGui::Separator();
+							ImGui::End();
+						}
+					}
+				}
+				else if (TextInfo.MenuName == MovementValuesMenuName)
+				{
+					if (bIsMovementValuesOpened)
+					{
+						if (ImGui::Begin(ToCharPtr(MovementStatsMenuName)), &bIsMovementValuesOpened)
+						{
+							ImGui::Text(ToCharPtr(TextInfo.Header + ": %s"), ToCharPtr(TextInfo.Value));
+							ImGui::Separator();
+							ImGui::End();
+						}
+					}
+				}
 			}
 		}
 	}

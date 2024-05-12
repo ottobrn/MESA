@@ -40,6 +40,9 @@ protected:
 
 	void CalculateLeanXYValue(float DeltaTime);
 
+	void CalculateDirectionLeap(float DeltaTime);
+
+	void PrintDebugInfo();
 public:
 	UFUNCTION(BlueprintCallable)
 	float GetMaxAcceleration() const;
@@ -59,10 +62,16 @@ protected:
 	FCharacterAnimSettings AnimSettings;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-	FCharacterAnimDirection MovementDirection = ECharacterMovementDirection::Forward;
+	FCharacterAnimDirection MovementDirection = ECharacterMovementDirection::None;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	FCharacterAnimDirection PreviousMovementDirection = ECharacterMovementDirection::None;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	FDirectionBlending DirectionBlending;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	FDirectionLeap DirectionLeap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Helpers|Blending")
 	FBlendingHelpers BlendingHelpers;
@@ -78,6 +87,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector RelativeAcceleration = FVector::ZeroVector;
+
+	UPROPERTY()
+	float DirectionLeapTime = 0.f;
 
 	// TODO: In struct
 	UPROPERTY(BlueprintReadOnly)
@@ -98,4 +110,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UCurveVector> YawOffset_LR = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UCurveFloat> DirectionLeapCurve = nullptr;
 };

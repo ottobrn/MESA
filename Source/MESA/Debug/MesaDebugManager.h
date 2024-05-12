@@ -6,6 +6,26 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MesaDebugManager.generated.h"
 
+USTRUCT()
+struct FGameDebugTextInfo
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	FString Header = FString();
+
+	UPROPERTY()
+	FString Value = FString();
+
+	UPROPERTY()
+	FString MenuName = FString();
+
+	bool operator==(const FGameDebugTextInfo& Other) const
+	{
+		return &Header == &Other.Header;
+	}
+};
+
 /**
  * 
  */
@@ -34,7 +54,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	ECharacterMovementState GetCharacterMovementState() const;
 	
+	void EmplaceDebugInfo(const FString& InHeader, const FGameDebugTextInfo& InInfo);
+
+	const TMap<FString, TArray<FGameDebugTextInfo>>& GetDebugInfo() { return DebugInfo; }
+	
 private:
 	UPROPERTY()
 	TObjectPtr<AMesaCharacterBase> CharacterInstance = nullptr;
+
+	TMap<FString, TArray<FGameDebugTextInfo>> DebugInfo;
 };

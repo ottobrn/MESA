@@ -60,3 +60,32 @@ ECharacterMovementState UMesaDebugManager::GetCharacterMovementState() const
 	}
 	return ECharacterMovementState::None;
 }
+
+void UMesaDebugManager::EmplaceDebugInfo(const FString& InHeader, const FGameDebugTextInfo& InInfo)
+{
+	if (!DebugInfo.Contains(InHeader))
+	{
+		TArray<FGameDebugTextInfo> InitArray = { InInfo };
+		DebugInfo.Emplace(InHeader, InitArray);
+		return;
+	}
+
+	TArray<FGameDebugTextInfo>* FoundInfo = DebugInfo.Find(InHeader);
+	if (FoundInfo)
+	{
+		auto FindPredicate = [&InInfo](const FGameDebugTextInfo& B)
+		{
+			return InInfo.Header == B.Header;
+		};
+		
+		FGameDebugTextInfo* FoundStruct = FoundInfo->FindByPredicate(FindPredicate);
+		if (FoundStruct)
+		{
+			FoundStruct->Value = InInfo.Value;
+		}
+		else
+		{
+			FoundInfo->Add(InInfo);
+		}
+	}
+}

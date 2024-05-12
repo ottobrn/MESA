@@ -25,6 +25,15 @@ void AMesaPlayerCameraManager::UpdateViewTarget(FTViewTarget& OutVT, float Delta
 	}
 }
 
+void AMesaPlayerCameraManager::InitializeProperties(AMesaCharacterBase* InCharacter)
+{
+	if (InCharacter == nullptr)
+	{
+		return;
+	}
+	PossessedCharacter = InCharacter;
+}
+
 bool AMesaPlayerCameraManager::IsFPCameraActive() const
 {
 	return bIsFPCameraActive;
@@ -35,14 +44,6 @@ void AMesaPlayerCameraManager::SwitchCurrentCamera()
 	bIsFPCameraActive = !bIsFPCameraActive;
 }
 
-void AMesaPlayerCameraManager::InitializeProperties(AMesaCharacterBase* InCharacter)
-{
-	if (InCharacter == nullptr)
-	{
-		return;
-	}
-	PossessedCharacter = InCharacter;
-}
 
 void AMesaPlayerCameraManager::UpdateDebugCamera(FTViewTarget& OutVT, float DeltaTime)
 {

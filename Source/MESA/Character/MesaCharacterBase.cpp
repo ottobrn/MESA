@@ -107,7 +107,7 @@ void AMesaCharacterBase::Tick(float DeltaTime)
 
 FVector AMesaCharacterBase::GetFPCameraLocation() const
 {
-	return TPMesh->GetSocketLocation(FName("SOCKET_Camera_Back"));
+	return TPMesh->GetSocketLocation(FName("SOCKET_Camera"));
 }
 
 bool AMesaCharacterBase::IsFirstPersonCamera() const
@@ -197,9 +197,9 @@ void AMesaCharacterBase::SetMovementState(const ECharacterMovementState NewState
 		MovementState = NewState;
 		if (IsLocallyControlled() && !HasAuthority())
 		{
-			TRACE_WARNING(FString::Printf(TEXT("Actor: %s"), *GetName()), 1.f);
 			Server_SetCharacterMovementState(NewState);
 		}
+		ADD_DEBUG_INFO(AnimHeaderName, "Movement State", EnumToString(MovementState), MovementStatsMenuName);
 	}
 }
 
@@ -212,6 +212,7 @@ void AMesaCharacterBase::SetCharacterGait(const ECharacterGait NewGait)
 		{
 			Server_SetCharacterGait(NewGait);
 		}
+		ADD_DEBUG_INFO(AnimHeaderName, "Character Gait", EnumToString(CharacterGait), MovementStatsMenuName);
 	}
 }
 
@@ -224,6 +225,7 @@ void AMesaCharacterBase::SetCharacterStance(const ECharacterStance NewStance)
 		{
 			Server_SetCharacterStance(NewStance);
 		}
+		ADD_DEBUG_INFO(AnimHeaderName, "Character Stance", EnumToString(CharacterStance), MovementStatsMenuName);
 	}
 }
 

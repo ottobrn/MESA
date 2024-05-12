@@ -48,4 +48,6 @@ private:
 
 private:
 	bool bIsMovementStatsOpened = false;
+
+	bool bIsMovementValuesOpened = false;
 };

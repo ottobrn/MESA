@@ -8,6 +8,7 @@
 #include "MESA/MESA.h"
 #include "MESA/Character/MesaCharacterBase.h"
 #include "MESA/Character/MesaCharacterMovementComponent.h"
+#include "MESA/Debug/MesaDebugHelpers.h"
 #include "MESA/Libraries/MesaMathLibrary.h"
 
 void UMesaCharacterAnimInstance::NativeInitializeAnimation()
@@ -46,18 +47,16 @@ bool UMesaCharacterAnimInstance::IsGrounded() const
 
 void UMesaCharacterAnimInstance::CalculateMovementDirection()
 {
+	PreviousMovementDirection = MovementDirection;
 	if (!AnimSettings.bIsMoving)
 	{
 		MovementOffset = 0.f;
+		MovementDirection = ECharacterMovementDirection::None;
+		return;
 	}
 
 	MovementOffset = UKismetAnimationLibrary::CalculateDirection(AnimSettings.Velocity, PossessedCharacter->GetActorRotation());
 	{
-		const float RFThreshold = 60.f;
-		const float LFThresold = -60.f;
-		const float RBThresold = 110.f;
-		const float LBThresold = -110.f;
-
 		auto CalcOffset = [](ECharacterMovementDirection CurrentDirection)
 		{
 			if (CurrentDirection != ECharacterMovementDirection::Forward && CurrentDirection != ECharacterMovementDirection::Backward)
@@ -71,17 +70,17 @@ void UMesaCharacterAnimInstance::CalculateMovementDirection()
 			return 0.f;
 		};
 		
-		if (UMesaMathLibrary::IsAngleInRange(MovementOffset, LFThresold, RFThreshold, CalcOffset(MovementDirection.Direction)))
+		if (UMesaMathLibrary::IsAngleInRange(MovementOffset, BlendingHelpers.LFThresold, BlendingHelpers.RFThreshold, CalcOffset(MovementDirection.Direction)))
 		{
 			MovementDirection = ECharacterMovementDirection::Forward;
 			return;
 		}
-		if (UMesaMathLibrary::IsAngleInRange(MovementOffset, RFThreshold, RBThresold, CalcOffset(MovementDirection.Direction)))
+		if (UMesaMathLibrary::IsAngleInRange(MovementOffset, BlendingHelpers.RFThreshold, BlendingHelpers.RBThresold, CalcOffset(MovementDirection.Direction)))
 		{
 			MovementDirection = ECharacterMovementDirection::Right;
 			return;
 		}
-		if (UMesaMathLibrary::IsAngleInRange(MovementOffset, LBThresold, LFThresold, CalcOffset(MovementDirection.Direction)))
+		if (UMesaMathLibrary::IsAngleInRange(MovementOffset, BlendingHelpers.LBThresold, BlendingHelpers.LFThresold, CalcOffset(MovementDirection.Direction)))
 		{
 			MovementDirection = ECharacterMovementDirection::Left;
 			return;
@@ -113,6 +112,19 @@ void UMesaCharacterAnimInstance::CalculateLeanXYValue(float DeltaTime)
 			LeanXY = UKismetMathLibrary::VInterpTo(LeanXY, FVector::ZeroVector, DeltaTime, BlendingHelpers.LeanInterpSpeed);
 		}
 	}
+}
+
+void UMesaCharacterAnimInstance::CalculateDirectionLeap(float DeltaTime)
+{
+	if (PreviousMovementDirection.Direction != MovementDirection.Direction)
+	{
+		DirectionLeapTime = 0.f;
+	}
+
+	DirectionLeapTime += DeltaTime;
+	DirectionBlending.DirectionLeap = DirectionLeapCurve->GetFloatValue(DirectionLeapTime);
+
+	ADD_DEBUG_INFO(AnimHeaderName, "Direction Leap", FString::SanitizeFloat(DirectionBlending.DirectionLeap), MovementValuesMenuName);
 }
 
 float UMesaCharacterAnimInstance::GetMaxAcceleration() const
@@ -162,6 +174,21 @@ FDirectionBlending UMesaCharacterAnimInstance::CalculateDirectionBlending() cons
 	return FDirectionBlending();
 }
 
+void UMesaCharacterAnimInstance::PrintDebugInfo()
+{
+	ADD_DEBUG_INFO(AnimHeaderName, "Speed", FString::SanitizeFloat(AnimSettings.Speed), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "Acceleration", AnimSettings.Acceleration.ToString(), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "Control Rotation", AnimSettings.ControlRotation.ToString(), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "Is Moving", AnimSettings.bIsMoving ? FString("True") : FString("False"), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "Velocity", AnimSettings.Velocity.ToString(), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.F", FString::SanitizeFloat(DirectionBlending.F), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.B", FString::SanitizeFloat(DirectionBlending.B), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.R", FString::SanitizeFloat(DirectionBlending.R), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.L", FString::SanitizeFloat(DirectionBlending.L), MovementValuesMenuName);
+	
+	ADD_DEBUG_INFO(AnimHeaderName, "Movement Direction", EnumToString(MovementDirection.Direction), MovementStatsMenuName);
+}
+
 void UMesaCharacterAnimInstance::UpdateAnimationProperties()
 {
 	CharacterAnimStates.CharacterGait = PossessedCharacter->GetCharacterGait();
@@ -180,11 +207,16 @@ void UMesaCharacterAnimInstance::UpdateMovementValues(float DeltaTime)
 	CalculateMovementDirection();
 	CalculateLeanXYValue(DeltaTime);
 	
+	// --- Direction blending ---
 	const FDirectionBlending& TargetBlending = CalculateDirectionBlending();
 	DirectionBlending.F = FMath::FInterpTo(DirectionBlending.F, TargetBlending.F, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
 	DirectionBlending.B = FMath::FInterpTo(DirectionBlending.B, TargetBlending.B, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
 	DirectionBlending.R = FMath::FInterpTo(DirectionBlending.R, TargetBlending.R, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
 	DirectionBlending.L = FMath::FInterpTo(DirectionBlending.L, TargetBlending.L, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
+	CalculateDirectionLeap(DeltaTime);
+	// --- Direction blending ---
+	
+	PrintDebugInfo();
 }
 
 void UMesaCharacterAnimInstance::UpdateRotationValues()

@@ -109,6 +109,27 @@ struct FDirectionBlending
 
 	UPROPERTY(BlueprintReadOnly)
 	float L = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float DirectionLeap = 0.f;
+};
+
+USTRUCT(BlueprintType)
+struct FDirectionLeap
+{
+	GENERATED_BODY();
+	
+	UPROPERTY(BlueprintReadOnly)
+	float F = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float B = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float R = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float L = 0.f;
 };
 
 USTRUCT(BlueprintType)
