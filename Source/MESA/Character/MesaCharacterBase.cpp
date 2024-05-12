@@ -25,11 +25,6 @@ AMesaCharacterBase::AMesaCharacterBase(const FObjectInitializer& ObjectInitializ
 
 	TPMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TPMesh"));
 	TPMesh->SetupAttachment(RootComponent);
-
-	FPMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FPMesh"));
-	FPMesh->SetupAttachment(RootComponent);
-	FPMesh->SetOnlyOwnerSee(true);
-	FPMesh->SetCastShadow(false);
 }
 
 void AMesaCharacterBase::BeginPlay()
@@ -112,7 +107,7 @@ void AMesaCharacterBase::Tick(float DeltaTime)
 
 FVector AMesaCharacterBase::GetFPCameraLocation() const
 {
-	return FPMesh->GetSocketLocation(FName("SOCKET_Camera_Back"));
+	return TPMesh->GetSocketLocation(FName("SOCKET_Camera_Back"));
 }
 
 bool AMesaCharacterBase::IsFirstPersonCamera() const

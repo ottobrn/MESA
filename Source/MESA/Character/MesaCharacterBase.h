@@ -144,9 +144,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class USkeletalMeshComponent> TPMesh = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<class USkeletalMeshComponent> FPMesh = nullptr;
-
 public:
 	UFUNCTION(BlueprintCallable)
 	UDebugComponent* GetDebugComponent() const { return DebugComponent; }
