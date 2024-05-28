@@ -30,9 +30,11 @@ void UMesaCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
-	
 	UpdateAnimationProperties();
 	UpdateMovementValues(DeltaSeconds);
+	UpdateRotationValues(DeltaSeconds);
+
+	PrintDebugInfo();
 }
 
 bool UMesaCharacterAnimInstance::CanSprinting() const
@@ -204,22 +206,16 @@ void UMesaCharacterAnimInstance::UpdateAnimationProperties()
 
 void UMesaCharacterAnimInstance::UpdateMovementValues(float DeltaTime)
 {
-	CalculateMovementDirection();
-	CalculateLeanXYValue(DeltaTime);
-	
 	// --- Direction blending ---
 	const FDirectionBlending& TargetBlending = CalculateDirectionBlending();
 	DirectionBlending.F = FMath::FInterpTo(DirectionBlending.F, TargetBlending.F, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
 	DirectionBlending.B = FMath::FInterpTo(DirectionBlending.B, TargetBlending.B, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
 	DirectionBlending.R = FMath::FInterpTo(DirectionBlending.R, TargetBlending.R, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
 	DirectionBlending.L = FMath::FInterpTo(DirectionBlending.L, TargetBlending.L, DeltaTime, BlendingHelpers.DirectionBlendingInterpSpeed);
-	CalculateDirectionLeap(DeltaTime);
 	// --- Direction blending ---
-	
-	PrintDebugInfo();
 }
 
-void UMesaCharacterAnimInstance::UpdateRotationValues()
+void UMesaCharacterAnimInstance::UpdateRotationValues(float DeltaTime)
 {
 	const FRotator& Delta = (AnimSettings.Velocity.ToOrientationRotator() - AnimSettings.ControlRotation).GetNormalized();
 	
@@ -230,5 +226,9 @@ void UMesaCharacterAnimInstance::UpdateRotationValues()
 	const FVector& LROffset = YawOffset_LR->GetVectorValue(Delta.Yaw);
 	LYaw = LROffset.X;
 	RYaw = LROffset.Y;
+
+	CalculateMovementDirection();
+	CalculateLeanXYValue(DeltaTime);
+	CalculateDirectionLeap(DeltaTime);
 }
 

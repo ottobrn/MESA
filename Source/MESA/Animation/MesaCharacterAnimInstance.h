@@ -34,7 +34,7 @@ protected:
 
 	void UpdateMovementValues(float DeltaTime);
 	
-	void UpdateRotationValues();
+	void UpdateRotationValues(float DeltaTime);
 
 	void CalculateMovementDirection();
 
