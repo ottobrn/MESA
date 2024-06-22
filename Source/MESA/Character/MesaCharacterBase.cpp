@@ -37,7 +37,6 @@ void AMesaCharacterBase::BeginPlay()
 	{
 		SetMovementState(ECharacterMovementState::Grounded);
 	}
-	UMesaDebugManager::Get(GetWorld())->SetCharacter(this);
 }
 
 void AMesaCharacterBase::PostInitializeComponents()
@@ -262,7 +261,7 @@ void AMesaCharacterBase::MoveAction_Implementation(const FVector2D& Value)
 	AddMovementInput(ForwardVector, Value.Y);
 
 	const FVector& RightVector = UKismetMathLibrary::GetRightVector(GetActorRotation());
-    AddMovementInput(RightVector, Value.X);
+	AddMovementInput(RightVector, Value.X);
 }
 
 void AMesaCharacterBase::LookAction_Implementation(const FVector2D& Value)

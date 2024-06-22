@@ -47,10 +47,19 @@ bool UMesaCharacterAnimInstance::IsGrounded() const
 	return CharacterAnimStates.MovementState == ECharacterMovementState::Grounded;
 }
 
+bool UMesaCharacterAnimInstance::CanMove() const
+{
+	if (CanSprinting() && AnimSettings.Speed > 80.f)
+	{
+		return true;
+	}
+	return false;
+}
+
 void UMesaCharacterAnimInstance::CalculateMovementDirection()
 {
 	PreviousMovementDirection = MovementDirection;
-	if (!AnimSettings.bIsMoving)
+	if (!CanMove())
 	{
 		MovementOffset = 0.f;
 		MovementDirection = ECharacterMovementDirection::None;
@@ -118,15 +127,26 @@ void UMesaCharacterAnimInstance::CalculateLeanXYValue(float DeltaTime)
 
 void UMesaCharacterAnimInstance::CalculateDirectionLeap(float DeltaTime)
 {
-	if (PreviousMovementDirection.Direction != MovementDirection.Direction)
+	if (PreviousMovementDirection.Direction != MovementDirection.Direction && AnimSettings.Speed > 300.f)
 	{
 		DirectionLeapTime = 0.f;
+		return;
 	}
 
 	DirectionLeapTime += DeltaTime;
 	DirectionBlending.DirectionLeap = DirectionLeapCurve->GetFloatValue(DirectionLeapTime);
 
-	ADD_DEBUG_INFO(AnimHeaderName, "Direction Leap", FString::SanitizeFloat(DirectionBlending.DirectionLeap), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Direction Leap"), FString::SanitizeFloat(DirectionBlending.DirectionLeap), MovementValuesMenuName);
+}
+
+void UMesaCharacterAnimInstance::CalculateCharacterStride()
+{
+	if (!IsGrounded())
+	{
+		return;
+	}
+	Stride = AnimSettings.Speed / GetOwningComponent()->GetComponentScale().Z;
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Stride"), FString::SanitizeFloat(Stride), MovementValuesMenuName);
 }
 
 float UMesaCharacterAnimInstance::GetMaxAcceleration() const
@@ -178,17 +198,17 @@ FDirectionBlending UMesaCharacterAnimInstance::CalculateDirectionBlending() cons
 
 void UMesaCharacterAnimInstance::PrintDebugInfo()
 {
-	ADD_DEBUG_INFO(AnimHeaderName, "Speed", FString::SanitizeFloat(AnimSettings.Speed), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "Acceleration", AnimSettings.Acceleration.ToString(), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "Control Rotation", AnimSettings.ControlRotation.ToString(), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "Is Moving", AnimSettings.bIsMoving ? FString("True") : FString("False"), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "Velocity", AnimSettings.Velocity.ToString(), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.F", FString::SanitizeFloat(DirectionBlending.F), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.B", FString::SanitizeFloat(DirectionBlending.B), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.R", FString::SanitizeFloat(DirectionBlending.R), MovementValuesMenuName);
-	ADD_DEBUG_INFO(AnimHeaderName, "DirectionBlending.L", FString::SanitizeFloat(DirectionBlending.L), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Speed"), FString::SanitizeFloat(AnimSettings.Speed), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Acceleration"), AnimSettings.Acceleration.ToString(), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Control Rotation"), AnimSettings.ControlRotation.ToString(), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Is Moving"), AnimSettings.bIsMoving ? FString("True") : FString("False"), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Velocity"), AnimSettings.Velocity.ToString(), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("DirectionBlending.F"), FString::SanitizeFloat(DirectionBlending.F), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("DirectionBlending.B"), FString::SanitizeFloat(DirectionBlending.B), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("DirectionBlending.R"), FString::SanitizeFloat(DirectionBlending.R), MovementValuesMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("DirectionBlending.L"), FString::SanitizeFloat(DirectionBlending.L), MovementValuesMenuName);
 	
-	ADD_DEBUG_INFO(AnimHeaderName, "Movement Direction", EnumToString(MovementDirection.Direction), MovementStatsMenuName);
+	ADD_DEBUG_INFO(AnimHeaderName, FName("Movement Direction"), EnumToString(MovementDirection.Direction), MovementStatsMenuName);
 }
 
 void UMesaCharacterAnimInstance::UpdateAnimationProperties()
@@ -228,6 +248,7 @@ void UMesaCharacterAnimInstance::UpdateRotationValues(float DeltaTime)
 	RYaw = LROffset.Y;
 
 	CalculateMovementDirection();
+	CalculateCharacterStride();
 	CalculateLeanXYValue(DeltaTime);
 	CalculateDirectionLeap(DeltaTime);
 }

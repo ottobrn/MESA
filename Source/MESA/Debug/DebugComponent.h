@@ -38,10 +38,4 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bUseNetDraw = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bUseDebugCamera = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bShowMovementStats = false;
 };

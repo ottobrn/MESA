@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ImGuiDelegates.h"
-#include "MesaUserWidget.h"
+#include "MESA/UI/Widgets/MesaUserWidget.h"
 #include "MesaDebugMenu.generated.h"
 
 /**
@@ -45,6 +45,9 @@ private:
 	// Instances
 	UPROPERTY()
 	TObjectPtr<class UMesaDebugManager> MesaDebugManager = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<class AMesaCharacterBase> MesaCharacter = nullptr;
 
 private:
 	bool bIsMovementStatsOpened = false;

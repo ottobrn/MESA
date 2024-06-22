@@ -29,6 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsGrounded() const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool CanMove() const;
+
 protected:
 	void UpdateAnimationProperties();
 
@@ -41,6 +44,8 @@ protected:
 	void CalculateLeanXYValue(float DeltaTime);
 
 	void CalculateDirectionLeap(float DeltaTime);
+
+	void CalculateCharacterStride();
 
 	void PrintDebugInfo();
 public:
@@ -103,6 +108,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	float LYaw = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float Stride = 0.f;
 
 	// Curves
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

@@ -17,51 +17,8 @@ UMesaDebugManager* UMesaDebugManager::Get(UWorld* World)
 	return nullptr;
 }
 
-void UMesaDebugManager::SetCharacter(AMesaCharacterBase* NewCharacter)
-{
-	CharacterInstance = NewCharacter;
-}
 
-ECharacterGait UMesaDebugManager::GetCharacterGait() const
-{
-	if (CharacterInstance)
-	{
-		return CharacterInstance->GetCharacterGait();
-	}
-	return ECharacterGait::None;
-}
-
-ECharacterStance UMesaDebugManager::GetCharacterStance() const
-{
-	if (CharacterInstance)
-	{
-		return CharacterInstance->GetCharacterStance();
-	}
-	return ECharacterStance::None;
-}
-
-ECharacterMovementDirection UMesaDebugManager::GetCharacterMovementDirection() const
-{
-	if (CharacterInstance)
-	{
-		if (UMesaCharacterAnimInstance* AnimInstance = Cast<UMesaCharacterAnimInstance>(CharacterInstance->GetMesh()->GetAnimInstance()))
-		{
-			return AnimInstance->GetMovementDirection().Direction;
-		}
-	}
-	return ECharacterMovementDirection::None;
-}
-
-ECharacterMovementState UMesaDebugManager::GetCharacterMovementState() const
-{
-	if (CharacterInstance)
-	{
-		return CharacterInstance->GetMovementState();
-	}
-	return ECharacterMovementState::None;
-}
-
-void UMesaDebugManager::EmplaceDebugInfo(const FString& InHeader, const FGameDebugTextInfo& InInfo)
+void UMesaDebugManager::EmplaceDebugInfo(const FName& InHeader, const FGameDebugTextInfo& InInfo)
 {
 	if (!DebugInfo.Contains(InHeader))
 	{

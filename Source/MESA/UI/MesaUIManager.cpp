@@ -2,7 +2,7 @@
 
 #include "MesaUIManager.h"
 #include "Blueprint/UserWidget.h"
-#include "Widgets/MesaDebugMenu.h"
+#include "Widgets/Debug/MesaDebugMenu.h"
 
 UMesaUIManager* UMesaUIManager::Get(UWorld* World)
 {

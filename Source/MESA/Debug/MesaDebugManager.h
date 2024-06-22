@@ -6,20 +6,36 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MesaDebugManager.generated.h"
 
+UENUM()
+enum class EDebugCategory : uint8
+{
+	Info,
+	Checkbox,
+	Slider,
+};
+
 USTRUCT()
 struct FGameDebugTextInfo
 {
 	GENERATED_BODY()
-	
-	UPROPERTY()
-	FString Header = FString();
 
+public:
+	UPROPERTY()
+	FName Header = FName();
+
+	UPROPERTY()
+	FName MenuName = FName();
+	
 	UPROPERTY()
 	FString Value = FString();
 
-	UPROPERTY()
-	FString MenuName = FString();
+	// Use this as value that need to be changed e.g. sliders, bools etc.
+	TSharedPtr<uint8> DynamicValue;
 
+	UPROPERTY()
+	EDebugCategory DebugCategory = EDebugCategory::Info;
+
+public:
 	bool operator==(const FGameDebugTextInfo& Other) const
 	{
 		return &Header == &Other.Header;
@@ -38,29 +54,14 @@ public:
 	// ALERT!! Always check what the Get() function returns, as its implementation is overridden by ALLOW_GAMEPLAY_DEBUGGER!
 	UFUNCTION(BlueprintCallable)
 	static UMesaDebugManager* Get(UWorld* World);
-
-	UFUNCTION()
-	void SetCharacter(class AMesaCharacterBase* NewCharacter);
-
-	UFUNCTION(BlueprintCallable)
-	ECharacterGait GetCharacterGait() const;
-
-	UFUNCTION(BlueprintCallable)
-	ECharacterStance GetCharacterStance() const;
-
-	UFUNCTION(BlueprintCallable)
-	ECharacterMovementDirection GetCharacterMovementDirection() const;
-
-	UFUNCTION(BlueprintCallable)
-	ECharacterMovementState GetCharacterMovementState() const;
 	
-	void EmplaceDebugInfo(const FString& InHeader, const FGameDebugTextInfo& InInfo);
+	void EmplaceDebugInfo(const FName& InHeader, const FGameDebugTextInfo& InInfo);
 
-	const TMap<FString, TArray<FGameDebugTextInfo>>& GetDebugInfo() { return DebugInfo; }
+	const TMap<FName, TArray<FGameDebugTextInfo>>& GetDebugInfo() { return DebugInfo; }
 	
 private:
 	UPROPERTY()
-	TObjectPtr<AMesaCharacterBase> CharacterInstance = nullptr;
+	TObjectPtr<class AMesaCharacterBase> CharacterInstance = nullptr;
 
-	TMap<FString, TArray<FGameDebugTextInfo>> DebugInfo;
+	TMap<FName, TArray<FGameDebugTextInfo>> DebugInfo;
 };
