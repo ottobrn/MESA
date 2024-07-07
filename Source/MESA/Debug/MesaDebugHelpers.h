@@ -47,7 +47,10 @@ namespace Private
 				FGameDebugTextInfo NewTextInfo;
 				NewTextInfo.Header = InName;
 				NewTextInfo.DebugCategory = DebugCategory;
-				NewTextInfo.DynamicValue = MakeShareable<uint8>(reinterpret_cast<uint8*>(DynamicValue));
+				if (DynamicValue != nullptr)
+				{
+					//NewTextInfo.DynamicValue = MakeShareable<uint8>(reinterpret_cast<uint8*>(DynamicValue));
+				}
 				
 				DebugManager->EmplaceDebugInfo(InHeader, NewTextInfo);
 			}

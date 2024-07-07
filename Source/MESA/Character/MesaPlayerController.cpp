@@ -162,3 +162,11 @@ void AMesaPlayerController::ToggleDebugMenu(const FInputActionValue& Value)
 		UIManager->ToggleDebugMenu();
 	}
 }
+
+void AMesaPlayerController::ZoomCameraAction(const FInputActionValue& Value)
+{
+	if (MesaCameraManager)
+	{
+		MesaCameraManager->ZoomCamera(Value.Get<float>());
+	}
+}

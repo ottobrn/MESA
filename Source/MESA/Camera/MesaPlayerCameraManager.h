@@ -27,17 +27,34 @@ public:
 	UFUNCTION()
 	void SwitchCurrentCamera();
 
+	UFUNCTION()
+	void ZoomCamera(float Value);
+
 protected:
 	UFUNCTION()
 	void UpdateDebugCamera(FTViewTarget& OutVT, float DeltaTime);
 
+	UFUNCTION()
+	void UpdateFPCamera(FTViewTarget& OutVT, float DeltaTime);
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera|Debug")
+	float CameraLocationOffset = 400.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float ZAxisSmothingValue = 3.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsFPCameraActive = true;
+
+	UPROPERTY(BlueprintReadOnly)
+	float ZoomValue = 0.f;
+	
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AMesaCharacterBase> PossessedCharacter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera|Debug")
-	float CameraLocationOffset = 400.f;
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsFPCameraActive = true;
+private:
+	UPROPERTY()
+	float ZAxisSmothing = 0.f;
 };

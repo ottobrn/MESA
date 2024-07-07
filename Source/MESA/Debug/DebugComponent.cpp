@@ -19,13 +19,14 @@ void UDebugComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Owner = Cast<AMesaCharacterBase>(GetOwner());
-	ADD_DYNAMIC_DEBUG_INFO(AnimHeaderName, FName("Show Debug Movement"), &bShowDebugMovement, EDebugCategory::Checkbox);\
-	ADD_DYNAMIC_DEBUG_INFO(AnimHeaderName, FName("Use Net Draw"), &bUseNetDraw, EDebugCategory::Checkbox);
 }
 
 void UDebugComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	ADD_DYNAMIC_DEBUG_INFO(AnimHeaderName, FName("Show Debug Movement"), &bShowDebugMovement, EDebugCategory::Checkbox);\
+	ADD_DYNAMIC_DEBUG_INFO(AnimHeaderName, FName("Use Net Draw"), &bUseNetDraw, EDebugCategory::Checkbox);
 	
 #if !UE_BUILD_SHIPPING
 	if (Owner == nullptr)

@@ -3,8 +3,11 @@
 
 #include "MesaDebugManager.h"
 
-#include "MESA/Animation/MesaCharacterAnimInstance.h"
-#include "MESA/Character/MesaCharacterBase.h"
+void UMesaDebugManager::Deinitialize()
+{
+	Super::Deinitialize();
+	DebugInfo.Empty();
+}
 
 UMesaDebugManager* UMesaDebugManager::Get(UWorld* World)
 {

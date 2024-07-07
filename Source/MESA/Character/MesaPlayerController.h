@@ -60,6 +60,9 @@ public:
 	UFUNCTION()
 	void ToggleDebugMenu(const FInputActionValue& Value);
 
+	UFUNCTION()
+	void ZoomCameraAction(const FInputActionValue& Value);
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AMesaCharacterBase> PossessedCharacter = nullptr;

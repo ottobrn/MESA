@@ -38,7 +38,7 @@ public:
 public:
 	bool operator==(const FGameDebugTextInfo& Other) const
 	{
-		return &Header == &Other.Header;
+		return Header.IsEqual(Other.Header, ENameCase::CaseSensitive, true);
 	}
 };
 
@@ -49,6 +49,8 @@ UCLASS()
 class MESA_API UMesaDebugManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+
+	virtual void Deinitialize() override;
 
 public:
 	// ALERT!! Always check what the Get() function returns, as its implementation is overridden by ALLOW_GAMEPLAY_DEBUGGER!
